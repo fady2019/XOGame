@@ -1,10 +1,95 @@
 :root{
-    --size: 140px;
-    --font-size: 3.5rem;
-    --mode-btn-width: 90px;
-    --mode-btn-height: 35px;
     --color-text:rgb(243, 243, 243); 
     --color-bg: #202020;
+    --choices-padding-x: 25px;
+    --choices-padding-y: 15px;
+    --choices-divs-margin-b: 30px;
+    --logo-skew: -40deg;
+}
+
+@media (max-width: 575px){
+    :root{
+        --choices-width: 95%;
+        --size-boxes: 80px;
+        --font-size: 2rem;
+        --logo-spacing: 3px;
+        --logo-size: 3.2rem;
+        --mode-btn-width: 50px;
+        --mode-btn-height: 22px;
+        --mode-btn-font-size: 12px;
+        --mode-btn-margin-x: 10px;
+        --options-btns-padding-x: 18px;
+        --options-btns-padding-y: 5px;
+        --options-btns-font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 576px){
+    :root{
+        --choices-width: 80%;
+        --size-boxes: 100px;
+        --font-size: 2.5rem;
+        --logo-spacing: 4px;
+        --logo-size: 4rem;
+        --mode-btn-width: 55px;
+        --mode-btn-height: 24px;
+        --mode-btn-font-size: 14px;
+        --mode-btn-margin-x: 12px;
+        --options-btns-padding-x: 22px;
+        --options-btns-padding-y: 5px;
+        --options-btns-font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px){
+    :root{
+        --choices-width: 60%;
+        --size-boxes: 110px;
+        --font-size: 2.8rem;
+        --logo-spacing: 5px;
+        --logo-size: 4.4rem;
+        --mode-btn-width: 60px;
+        --mode-btn-height: 26px;
+        --mode-btn-font-size: 15px;
+        --mode-btn-margin-x: 14px;
+        --options-btns-padding-x: 23px;
+        --options-btns-padding-y: 5px;
+        --options-btns-font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 992px){
+    :root{
+        --choices-width: 45%;
+        --size-boxes: 120px;
+        --font-size: 3rem;
+        --logo-spacing: 6px;
+        --logo-size: 4.8rem;
+        --mode-btn-width: 65px;
+        --mode-btn-height: 28px;
+        --mode-btn-font-size: 16px;
+        --mode-btn-margin-x: 14px;
+        --options-btns-padding-x: 25px;
+        --options-btns-padding-y: 6px;
+        --options-btns-font-size: .8rem;
+    }
+}
+
+@media (min-width: 1200px){
+    :root{
+        --choices-width: 35%;
+        --size-boxes: 140px;
+        --font-size: 3.5rem;
+        --logo-spacing: 8px;
+        --logo-size: 5.5rem;
+        --mode-btn-width: 75px;
+        --mode-btn-height: 30px;
+        --mode-btn-font-size: 18px;
+        --mode-btn-margin-x: 15px;
+        --options-btns-padding-x: 28px;
+        --options-btns-padding-y: 8px;
+        --options-btns-font-size: .85rem;
+    }
 }
 
 *{
@@ -15,6 +100,7 @@
 
 body{
     font-family: cursive, Arial, Helvetica, sans-serif;
+    color: var(--color-text);
 }
 
 html{
@@ -25,14 +111,19 @@ html{
     filter: invert(1) hue-rotate(180deg);
 }
 
-.switch-mode{
-    position: absolute;
-    display: flex;
-    align-items: center;
+.box-container .top{
+    position: fixed;
     right: calc(var(--mode-btn-height) - 5px);
     top: calc(var(--mode-btn-height) - 5px);
-    color: var(--color-text);
-    font-size: 18px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.switch-mode{
+    display: flex;
+    align-items: center;
+    font-size: var(--mode-btn-font-size);
     font-weight: 600;
 }
 
@@ -41,7 +132,7 @@ html{
     align-items: center;
     width: var(--mode-btn-width);
     height: var(--mode-btn-height);
-    margin: 0 calc(var(--mode-btn-height) - 15px);
+    margin: 0 var(--mode-btn-margin-x);
     border: 2px solid var(--color-bg);
     border-radius: 50px;
     padding: 0 2.5px;
@@ -69,6 +160,23 @@ html{
     background-color: var(--color-text);
 }
 
+.box-container .top .options{
+    margin-right: 15px;
+}
+
+.box-container .top .options button,
+.choices .box-choices button{
+    cursor: pointer;
+    border: 0;
+    outline: none;
+    padding: var(--options-btns-padding-y) var(--options-btns-padding-x);
+    border-radius: 3px;
+    font-size: var(--options-btns-font-size);
+    font-weight: 600;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .choices{
     position: fixed;
     top: 0;
@@ -80,19 +188,21 @@ html{
     justify-content: center;
     align-items: center;
     background-color: var(--color-bg);
-    color: var(--color-text);
 }
 
 .hidden{
     opacity: 0;
     transition: all .5s ease-in-out;
-    z-index: -1;
+}
+
+.none{
+    display: none;
 }
 
 .choices .box-choices{
     overflow: auto;
-    min-width: 35%;
-    padding: 15px 25px;
+    min-width: var(--choices-width);
+    padding: var(--choices-padding-y) var(--choices-padding-x);
     box-shadow: -5px -5px 5px rgba(255, 255, 255, 0.05),
                 5px 5px 5px rgba(0, 0, 0, 0.3),
                 -5px -5px 5px rgba(255, 255, 255, 0.05) inset,
@@ -106,34 +216,52 @@ html{
     padding-bottom: 2px;
 }
 
-.choices .box-choices > div:not(:last-of-type){
-    margin-bottom: 30px;
+.choices .box-choices > div{
+    margin-bottom: var(--choices-divs-margin-b);
 }
 
 .choices .box-choices label{
     display: block;
     margin: 5px 0;
+}
+
+.choices .box-choices > div:not(.names) label{
     cursor: pointer;
 }
 
 .choices .box-choices button{
-    cursor: pointer;
-    border: 0;
-    outline: none;
-    padding: 8px 28px;
     float: right;
-    border-radius: 3px;
-    font-size: .85rem;
-    font-weight: 600;
-    color: var(--color-bg);
+    margin-left: 0;
+    margin-right: 0;
 }
 
+.choices .box-choices input[type = "text"]{
+    width: 100%;
+    padding: 7px;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+}
+
+
 .box-container{
+    position: relative;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: var(--color-bg);
+}
+
+.box-container .logo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) skewY(var(--logo-skew));
+    font-size: var(--logo-size);
+    letter-spacing: var(--logo-spacing);
+    opacity: 0.1;
 }
 
 .box-container .box{
@@ -150,11 +278,10 @@ html{
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: var(--size);
-    height: var(--size);
+    width: var(--size-boxes);
+    height: var(--size-boxes);
     font-size: var(--font-size);
     cursor: pointer;
-    color: var(--color-text);
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
     box-shadow: -5px -5px 5px rgba(255, 255, 255, 0.05),
                 5px 5px 5px rgba(0, 0, 0, 0.3),
@@ -162,11 +289,10 @@ html{
                 5px 5px 5px rgba(0, 0, 0, 0.3) inset;
 }
 
-.box-container .box .row .col.done{ 
+.box-container .box .row .col.done,
+.box-container .box .row .col.full-box{ 
     pointer-events: none !important;
-    cursor: no-drop !important;
 }
-
 
 .box-container .box .row .col.done-h::before,
 .box-container .box .row .col.done-v::before,
@@ -207,25 +333,57 @@ html{
     transform: skew(-45deg, 0) translateX(-50%);
 }
 
-@media (max-width: 575px){
-    :root{
-        --mode-btn-width: 60px;
-        --mode-btn-height: 25px;
-    }
+.box-container .result-popup{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    transition: all .75s ease-in-out;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: calc(var(--size-boxes) * 3.5);
+    background: var(--color-bg);
+    z-index: 999;
+    padding: var(--choices-padding-y) var(--choices-padding-x);
+    box-shadow: -5px -5px 5px rgba(255, 255, 255, 0.05),
+                5px 5px 5px rgba(0, 0, 0, 0.3),
+                -5px -5px 5px rgba(255, 255, 255, 0.05) inset,
+                5px 5px 5px rgba(0, 0, 0, 0.3) inset;
 }
 
-@media (min-width: 576px){
-    
+.show{
+    opacity: 1 !important;
 }
 
-@media (min-width: 768px){
-    
+.box-container .result{
+    font-size: calc(var(--font-size) - .75rem);
+    text-align: center;
 }
 
-@media (min-width: 992px){
-    
+.box-container .names{
+    position: fixed;
+    left: calc(var(--mode-btn-height) - 5px);
+    bottom: calc(var(--mode-btn-height) - 5px);
+    display: flex;
+    align-items: center;
 }
 
-@media (min-width: 1200px){
-    
+.box-container .names > div:not(:last-of-type){
+    margin-right: 20px;
+}
+
+.box-container .activeChar{
+    position: fixed;
+    right: calc(var(--mode-btn-height) - 5px);
+    bottom: calc(var(--mode-btn-height) - 5px);
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    box-shadow: -5px -5px 5px rgba(255, 255, 255, 0.05),
+                5px 5px 5px rgba(0, 0, 0, 0.3),
+                -5px -5px 5px rgba(255, 255, 255, 0.05) inset,
+                5px 5px 5px rgba(0, 0, 0, 0.3) inset;
 }

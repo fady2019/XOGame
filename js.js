@@ -96,8 +96,15 @@ function checkResult(arr){
     return successful;
 }
 
+function animateNone(ele, duration){
+    let animation = setInterval( () => {
+        ele.classList.add("none");
+        clearInterval(animation);
+    },duration )
+}
+
 //start with choices
-let styleGame,
+let styleGame = document.getElementsByName("PS"),
     styleGameValue,
     char,
     charValue,
@@ -112,11 +119,68 @@ let styleGame,
         ["", "", ""],
         ["", "", ""]
     ],
+    p1Name,
+    p2Name,
+    p1NameSpan = document.querySelector(".box-container .names #player1 .name"),
+    p2NameSpan = document.querySelector(".box-container .names #player2 .name"),
+    p1ScoreSpan = document.querySelector(".box-container .names #player1 .score"),
+    p2ScoreSpan = document.querySelector(".box-container .names #player2 .score"),
+    activeChar = document.querySelector(".box-container .activeChar"),
     finalResult = checkResult(result),
-    autoClick = true;
+    resultPopup = document.querySelector(".result-popup"),
+    reloadBtn = document.querySelector(".box-container .top .options #reload"),
+    clearBtn = document.querySelector(".box-container .top .options #clear"),
+    autoClick = false;
+
+function showFinalResult(ele){
+    ele.style.display = "flex";
+    let showResult = setInterval( () => {
+        ele.classList.add("show");
+        clearInterval(showResult);
+    }, 1);
+}
+
+function hideFinalResult(ele){
+    ele.classList.remove("show");
+    let hideResult = setInterval( () => {
+        ele.style.display = "";
+        clearInterval(hideResult);
+    }, 750);
+}
+
+reloadBtn.onclick = function(){
+    window.location.reload();
+}
+
+clearBtn.onclick = function(){
+    counter = 0;
+    result = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ];
+
+    hideFinalResult(resultPopup);
+
+    boxes.forEach(box => {
+        box.innerHTML = "";
+        box.classList.remove("done", "full-box", "done-h", "done-v", "done-ld", "done-rd");
+        box.classList.add("empty-box");
+    })
+}
 
 boxes.forEach(ele => {
-    ele.classList.add("empty-box")
+    ele.classList.add("empty-box");
+})
+
+styleGame.forEach(ele => {
+    ele.onchange = function(){
+        if(ele.value == "single"){
+            document.querySelector('.choices .p2Name').classList.add("none")
+        }else{
+            document.querySelector('.choices .p2Name').classList.remove("none");
+        }
+    }
 })
 
 startBtn.onclick = function(){
@@ -136,17 +200,38 @@ startBtn.onclick = function(){
         }
     })
 
+    // get names
+    p1Name = document.querySelector(".choices .p1Name input").value;
+    p2Name = document.querySelector(".choices .p2Name input").value;
+    p1Name = p1Name.trim(); 
+    p2Name = p2Name.trim();
+
     // hiding choices page
-    document.querySelector(".choices").classList.add('hidden');
+    let choicesBox = document.querySelector(".choices");
+    choicesBox.classList.add('hidden');
+    animateNone(choicesBox, 500);
 
     // storage data
     XOGame = {
-        playerName1: "Player1",
-        playerName2: "player2",
+        single: styleGameValue == 'single'? true : false,
+        playerName1: p1Name == ""? "Player1": p1Name,
+        playerName2: styleGameValue == 'single'? "Computer": p2Name == ""? "Player2": p2Name,
         playerChar1: charValue == "x"? "X" : "O",
         playerChar2: charValue == "x"? "O" : "X",
-        single: styleGameValue == 'single'? true : false,
+        playerScore1: 0,
+        playerScore2: 0
+    };
+
+    activeChar.innerHTML = XOGame.playerChar1;
+
+    // put names and scores in their span
+    p1NameSpan.innerHTML = XOGame.playerName1;
+    p2NameSpan.innerHTML = XOGame.playerName2;
+    function updateScroe(obj){
+        p1ScoreSpan.innerHTML = obj.playerScore1;
+        p2ScoreSpan.innerHTML = obj.playerScore2;
     }
+    updateScroe(XOGame);
 
     // filling boxes
     boxes.forEach(ele => {
@@ -158,8 +243,10 @@ startBtn.onclick = function(){
 
                 if(counter % 2 == 0){
                     ele.innerHTML = XOGame.playerChar2;
+                    activeChar.innerHTML = XOGame.playerChar1;
                 }else{
                     ele.innerHTML = XOGame.playerChar1;
+                    activeChar.innerHTML = XOGame.playerChar2;
                     autoClick = true;
                 }
             }
@@ -172,7 +259,23 @@ startBtn.onclick = function(){
             })
 
             finalResult = checkResult(result);
+            // finished
             if(finalResult.done){
+                resultPopup.querySelector(".result").innerHTML = `Player of (${finalResult.wonChar}) is winner!`;
+
+                showFinalResult(resultPopup);
+
+                activeChar.innerHTML = "";
+
+                // update score of players
+                if(finalResult.wonChar === XOGame.playerChar1){
+                    XOGame.playerScore1 += 1;
+                    updateScroe(XOGame);
+                }else if(finalResult.wonChar === XOGame.playerChar2){
+                    XOGame.playerScore2 += 1;
+                    updateScroe(XOGame);
+                }
+
                 boxes.forEach(ele => {
                     ele.classList.add('done');
                 })
@@ -212,15 +315,26 @@ startBtn.onclick = function(){
             }
             
             // auto click when playing with computer
+            let comTurnInterval;
             emptyBoxes = document.querySelectorAll('.box .empty-box');
             if(XOGame.single && !finalResult.done && autoClick){
                 autoClick = false;
-                randomBox = Math.floor( Math.random() * emptyBoxes.length );
-                emptyBoxes[randomBox].click();
+                comTurnInterval = setInterval( () => {
+                    randomBox = Math.floor( Math.random() * emptyBoxes.length );
+                    emptyBoxes[randomBox].click();
+                    clearInterval(comTurnInterval);
+                }, 500);
+                
             }
 
             if(emptyBoxes.length == 0 && finalResult.done == false){
-                alert("Done, but there's no a winner !")
+                activeChar.innerHTML = "";
+                
+                if(XOGame.single) clearInterval(comTurnInterval);
+
+                resultPopup.querySelector(".result").innerHTML = "Nobody is winner!";
+
+                showFinalResult(resultPopup);
             }
         }
     })

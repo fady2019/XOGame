@@ -10,17 +10,17 @@
     <div class="choices">
         <div class="box-choices">
             <h3>Settings</h3>
-            <div>
+            <div class="styGame">
                 <span>Choose your playing style</span>
                 <label>
-                    <input type="radio" name="PS" value="single"> Single
+                    <input type="radio" name="PS" value="single" checked> Single
                 </label>
                 <label>
-                    <input type="radio" name="PS" value="friend" checked> Against your friend
+                    <input type="radio" name="PS" value="friend"> Against your friend
                 </label>
             </div>
 
-            <div>
+            <div class="chars">
                 <span>Do you want start with</span>
                 <label>
                     <input type="radio" name="startChar" value="x" checked> X
@@ -30,15 +30,37 @@
                 </label>
             </div>
 
+            <div class="names">
+                <div class="p1Name">
+                    <label>Name of player1</label>
+                    <input type="text" placeholder="player1's name">
+                </div>
+                <div class="p2Name none">
+                    <label>Name of player2</label>
+                    <input type="text" placeholder="player2's name">
+                </div>
+            </div>
+
             <button>Start</button>
         </div>
     </div>
-
+    
     <div class="box-container">
-        <div class="switch-mode">
-            Dark
-            <span class="dark"></span>
-            Light
+        <div class="top">
+            <div class="switch-mode">
+                Dark
+                <span class="dark"></span>
+                Light
+            </div>
+    
+            <div class="options">
+                <button id="clear">Clear</button>
+                <button id="reload">Reload</button>
+            </div>
+        </div>
+
+        <div class="logo">
+            DRAGON
         </div>
         
         <div class="box">
@@ -60,6 +82,21 @@
                 <span id="col9" class="col" data-index="2-2"></span>
             </div>
         </div>
+
+        <div class="result-popup">
+            <div class="result"></div>
+        </div>
+
+        <div class="names">
+            <div id="player1">
+                <span class="name"></span>: <span class="score"></span>
+            </div>
+            <div id="player2">
+                <span class="name"></span>: <span class="score"></span>
+            </div>
+        </div>
+
+        <div class="activeChar"></div>
     </div>
 
     <script src="./js.js"></script>
